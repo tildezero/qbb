@@ -1,8 +1,9 @@
 from discord.ext.commands import Cog, Bot
-from discord.app_commands import command
-from discord import Interaction, Embed, Color
+from discord.app_commands import command 
+from discord import Interaction, Embed, Color, User
 from prisma import Prisma
 from common.types import category_field_translations
+from typing import Optional
 
 reverse_categories = {v: k for k, v in category_field_translations.items()}
 
@@ -12,15 +13,16 @@ class Stats(Cog):
         super().__init__()
 
     @command(description="Get your statistics for qbb")
-    async def stats(self, ctx: Interaction):
+    async def stats(self, ctx: Interaction, user: Optional[User] = None):
         db = Prisma()
         await db.connect()
-        stats = await db.user.find_first(where={'id': ctx.user.id})
-        cb = await db.categorybreakdown.find_first(where={'userId': ctx.user.id})
+        person = user if user is not None else ctx.user
+        stats = await db.user.find_first(where={'id': person.id})
+        cb = await db.categorybreakdown.find_first(where={'userId': person.id})
         if stats is None or cb is None:
-            embed = Embed(title="No Stats!", description="You have no stats! Trying using the bot and then running this command", color=Color.red())
+            embed = Embed(title="No Stats!", description=f"@{person.name} has no stats! Trying using the bot and then running this command", color=Color.red())
             return await ctx.response.send_message(embed=embed)
-        embed = Embed(title="Your Stats!", description=f"""**Number of correct tossups:** {stats.questions_correct}
+        embed = Embed(title="@{person.name}'s qbb stats", description=f"""**Number of correct tossups:** {stats.questions_correct}
         **Number of incorrect tossups:** {stats.questions_incorrect}
         """)
         for cat in category_field_translations.values():
