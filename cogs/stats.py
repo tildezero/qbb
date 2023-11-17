@@ -2,8 +2,6 @@ from discord.ext.commands import Cog, Bot
 from discord.app_commands import command
 from discord import Interaction, Embed, Color
 from prisma import Prisma
-# from prisma.models import User, CategoryBreakdown
-# from prisma import get_client
 from common.types import category_field_translations
 
 reverse_categories = {v: k for k, v in category_field_translations.items()}
@@ -16,7 +14,6 @@ class Stats(Cog):
     @command(description="Get your statistics for qbb")
     async def stats(self, ctx: Interaction):
         db = Prisma()
-        # db = get_client()
         await db.connect()
         stats = await db.user.find_first(where={'id': ctx.user.id})
         cb = await db.categorybreakdown.find_first(where={'userId': ctx.user.id})
@@ -26,7 +23,6 @@ class Stats(Cog):
         embed = Embed(title="Your Stats!", description=f"""**Number of correct tossups:** {stats.questions_correct}
         **Number of incorrect tossups:** {stats.questions_incorrect}
         """)
-        print(stats.category_breakdown.__str__())
         for cat in category_field_translations.values():
             corr = getattr(cb, f'{cat}_correct')
             incorr = getattr(cb, f'{cat}_incorrect')

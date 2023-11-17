@@ -22,7 +22,7 @@ class Answer(Modal, title="Submit Answer"):
 
     async def on_submit(self, interaction: Interaction) -> None:
         c = AsyncClient()
-        db = Prisma(auto_register=True)
+        db = Prisma()
         answer_check_resp = await c.get(
             "https://qbreader.org/api/check-answer",
             params={
