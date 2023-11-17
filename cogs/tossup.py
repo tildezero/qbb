@@ -28,10 +28,9 @@ class Tossup(Cog):
 
         view: TossupButtons = TossupButtons(tossup)
         embed = Embed(title="Random Tossup", description=tossup["sentences"][0])
-        # embed.set_author(
-            # name=f"{tossup['set']['name']} Packet {tossup['packetNumber']} Question {tossup['questionNumber']} (Category: {tossup['category']})"
-        # )
-        embed.set_author(name=tossup['answer'])
+        embed.set_author(
+            name=f"{tossup['set']['name']} Packet {tossup['packetNumber']} Question {tossup['questionNumber']} (Category: {tossup['category']})"
+        )
         embed.set_footer(text="Questions obtained from qbreader.org")
         await ctx.response.send_message(embed=embed, view=view)
         await c.aclose()
