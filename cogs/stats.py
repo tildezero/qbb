@@ -2,7 +2,8 @@ from discord.ext.commands import Cog, Bot
 from discord.app_commands import command
 from discord import Interaction, Embed, Color
 from prisma import Prisma
-from prisma.models import User, CategoryBreakdown
+# from prisma.models import User, CategoryBreakdown
+# from prisma import get_client
 from common.types import category_field_translations
 
 reverse_categories = {v: k for k, v in category_field_translations.items()}
@@ -14,10 +15,11 @@ class Stats(Cog):
 
     @command(description="Get your statistics for qbb")
     async def stats(self, ctx: Interaction):
-        db = Prisma(auto_register=True)
+        db = Prisma()
+        # db = get_client()
         await db.connect()
-        stats = await User.prisma().find_first(where={'id': ctx.user.id})
-        cb = await CategoryBreakdown.prisma().find_first(where={'userId': ctx.user.id})
+        stats = await db.user.find_first(where={'id': ctx.user.id})
+        cb = await db.categorybreakdown.find_first(where={'userId': ctx.user.id})
         if stats is None or cb is None:
             embed = Embed(title="No Stats!", description="You have no stats! Trying using the bot and then running this command", color=Color.red())
             return await ctx.response.send_message(embed=embed)
