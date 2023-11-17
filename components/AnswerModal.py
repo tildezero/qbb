@@ -77,6 +77,7 @@ class Answer(Modal, title="Submit Answer"):
                 INSERT INTO CategoryBreakdown(userId, {category}_incorrect) VALUES (?, 0)
                     ON CONFLICT(userId) DO UPDATE SET {category}_incorrect={category}_incorrect+1
             """, interaction.user.id)
+        await db.disconnect()
         await c.aclose()
 
 class SoloAnswer(Modal, title="Submit Answer"):
