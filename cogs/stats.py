@@ -22,7 +22,7 @@ class Stats(Cog):
         if stats is None or cb is None:
             embed = Embed(title="No Stats!", description=f"@{person.name} has no stats! Trying using the bot and then running this command", color=Color.red())
             return await ctx.response.send_message(embed=embed)
-        embed = Embed(title="@{person.name}'s qbb stats", description=f"""**Number of correct tossups:** {stats.questions_correct}
+        embed = Embed(title=f"@{person.name}'s qbb stats", description=f"""**Number of correct tossups:** {stats.questions_correct}
         **Number of incorrect tossups:** {stats.questions_incorrect}
         """)
         for cat in category_field_translations.values():
