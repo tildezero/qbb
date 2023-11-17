@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-py"
+  recursive_type_depth = 5
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/database.db" 
+}
+
+model User {
+  id BigInt @id
+  questions_correct Int @default(0)
+  questions_incorrect Int @default(0)
+  category_breakdown CategoryBreakdown?
+}
+
+model CategoryBreakdown {
+  userId BigInt @unique
+  user User @relation(fields: [userId], references: [id])
+  id Int @id @default(autoincrement())
+
+  literature_correct Int @default(0)
+  literature_incorrect Int @default(0)
+  
+  history_correct Int @default(0)
+  history_incorrect Int @default(0)
+  
+  science_correct Int @default(0)
+  science_incorrect Int @default(0)
+  
+  fine_arts_correct Int @default(0)
+  fine_arts_incorrect Int @default(0)
+
+  religion_correct Int @default(0)
+  religion_incorrect Int @default(0)
+  
+  mythology_correct Int @default(0)
+  mythology_incorrect Int @default(0)
+
+  philosophy_correct Int @default(0)
+  philosophy_incorrect Int @default(0)
+  
+  social_science_correct Int @default(0)
+  social_science_incorrect Int @default(0)
+
+  current_events_correct Int @default(0)
+  current_events_incorrect Int @default(0)
+
+  geography_correct Int @default(0)
+  geography_incorrect Int @default(0)
+
+  other_academic_correct Int @default(0)
+  other_academic_incorrect Int @default(0)
+
+  trash_correct Int @default(0)
+  trash_incorrect Int @default(0)
+}

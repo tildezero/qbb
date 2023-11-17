@@ -14,3 +14,18 @@ question_category = Literal[
     "Other Academic",
     "Trash",
 ]
+
+category_field_translations = {
+    'Literature': 'literature',
+    'History': 'history',
+    'Science': 'science',
+    'Fine Arts': 'fine_arts',
+    'Religion': 'religion',
+    'Mythology': 'mythology',
+    'Philosophy': 'philosophy',
+    'Social Science': 'social_science',
+    'Current Events': 'current_events',
+    'Geography': 'geography',
+    'Other Academic': 'other_academic',
+    'Trash': 'trash'
+}

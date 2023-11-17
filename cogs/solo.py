@@ -17,7 +17,7 @@ class Solo(GroupCog, name="solo"):
     @command(description="Do a tossup in solo mode (only you can control the tossup)")
     async def tossup(self, ctx: Interaction, category: Optional[question_category] = None):
         c = AsyncClient()
-        params = {'difficulties': [2,3,4,5]}
+        params: dict = {'difficulties': [2,3,4,5]}
         if category is not None:
             params['categories'] = category
 

@@ -29,6 +29,8 @@ class TossupButtons(View):
             return await interaction.response.send_message(
                 "you've already answered!", ephemeral=True
             )
+        if interaction.message is None:
+            return interaction.response.send_message("Couldn't find the message!", ephemeral=True)
         e = interaction.message.embeds[0]
         self.i += 1
         if self.i == len(self.tossup["sentences"]):
@@ -46,13 +48,16 @@ class TossupButtons(View):
         self.final_answer_votes += 1
         button.label = f"vote to reveal answer ({self.final_answer_votes}/3)"
         if self.final_answer_votes >= 3:
+            if interaction.message is None:
+                return interaction.response.send_message("Couldn't find the message!", ephemeral=True)
             e = interaction.message.embeds[0]
             e.title = '[SKIPPED] Random Tossup'
             e.color = Color.orange()
             e.description = self.tossup["question"]
             e.add_field(name="Answer", value=self.tossup["answer"])
             for item in self.children:
-                item.disabled = True
+                if isinstance(item, Button):
+                    item.disabled = True
             return await interaction.response.edit_message(embed=e, view=self)
         await interaction.response.edit_message(view=self)
         await interaction.followup.send("you've voted!", ephemeral=True)
@@ -76,6 +81,8 @@ class SoloTossupButtons(View):
             return await interaction.response.send_message(
                 "not your tossup!", ephemeral=True
             )
+        if interaction.message is None:
+            return interaction.response.send_message("Couldn't find the message!", ephemeral=True)
         e = interaction.message.embeds[0]
         self.i += 1
         if self.i == len(self.tossup["sentences"]) - 1:
@@ -89,11 +96,14 @@ class SoloTossupButtons(View):
             return await interaction.response.send_message(
                 "not your tossup!", ephemeral=True
             )
+        if interaction.message is None:
+            return await interaction.response.send_message('Error!')
         e = interaction.message.embeds[0]
         e.title = f'[SKIPPED] Random Tossup'
         e.color = Color.orange()
         e.description = self.tossup["question"]
         e.add_field(name="Answer", value=self.tossup["answer"])
         for item in self.children:
-            item.disabled = True
+            if isinstance(item, Button):
+                item.disabled = True
         return await interaction.response.edit_message(embed=e, view=self)

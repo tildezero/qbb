@@ -22,6 +22,7 @@ class QBBBot(Bot):
     async def setup_hook(self):
         await self.load_extension('cogs.tossup')
         await self.load_extension('cogs.solo')
+        await self.load_extension('cogs.stats')
         await self.load_extension('jishaku')
 
 
