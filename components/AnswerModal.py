@@ -51,7 +51,7 @@ class Answer(Modal, title="Submit Answer"):
                     item.disabled = True
             self.stop_working = True
             await interaction.response.edit_message(embed=e, view=self.view)
-            await User.prisma().upsert(where={'id': interaction.user.id}, data={
+            await db.user.upsert(where={'id': interaction.user.id}, data={
                 'create': {'questions_correct': 1, 'id': interaction.user.id, 'questions_incorrect': 0},
                 'update': {'questions_correct': {'increment': 1}}
             })
@@ -65,7 +65,7 @@ class Answer(Modal, title="Submit Answer"):
         else:
             await interaction.response.send_message(f"Incorrect! You've been locked out from the question. The correct answer was {self.view.tossup['answer']}", ephemeral=True)
             self.view.already_answered.append(interaction.user.id)
-            await User.prisma().upsert(
+            await db.user.upsert(
                 where={'id': interaction.user.id},
                 data={
                     'create': {'questions_correct': 0, 'id': interaction.user.id, 'questions_incorrect': 1},
