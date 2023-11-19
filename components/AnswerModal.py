@@ -15,7 +15,6 @@ class Answer(Modal, title="Submit Answer"):
     def __init__(self, correct_answer: str, view: TossupButtons) -> None:
         self.correct_answer = correct_answer
         self.view = view
-        self.stop_working = False
         super().__init__()
 
     answer = TextInput(label="Answer", placeholder="Your answer here")
@@ -34,8 +33,6 @@ class Answer(Modal, title="Submit Answer"):
         await db.connect()
 
         if answer_check_data["directive"] == "accept":
-            if self.stop_working:
-                return await interaction.response.send_message('Someone has already answered this correctly!', ephemeral=True)
             if interaction.message is None:
                 return 
             e = interaction.message.embeds[0]
@@ -49,7 +46,6 @@ class Answer(Modal, title="Submit Answer"):
             for item in items:
                 if isinstance(item, Button):
                     item.disabled = True
-            self.stop_working = True
             await interaction.response.edit_message(embed=e, view=self.view)
             await db.user.upsert(where={'id': interaction.user.id}, data={
                 'create': {'questions_correct': 1, 'id': interaction.user.id, 'questions_incorrect': 0},
