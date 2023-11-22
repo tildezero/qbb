@@ -23,6 +23,7 @@ class QBBBot(Bot):
         await self.load_extension('cogs.tossup')
         await self.load_extension('cogs.solo')
         await self.load_extension('cogs.stats')
+        await self.load_extension('cogs.search')
         await self.load_extension('jishaku')
 
 
