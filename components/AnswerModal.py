@@ -39,9 +39,9 @@ class Answer(Modal, title="Submit Answer"):
             e.color = Color.green()
             e.title = '[CORRECT!] Random Tossup'
             e.description = ".".join(self.view.tossup['sentences'][0:self.view.i+1]) + " **(BUZZ)** " + ".".join(self.view.tossup['sentences'][self.view.i+1:])
-            e.add_field(name='Your answer', value=self.answer.value)
-            e.add_field(name='Official answer', value=self.view.tossup['answer'])
-            e.add_field(name='Answered by', value=interaction.user.mention)
+            e.add_field(name='Correct answer', value=self.answer.value, inline=True)
+            e.add_field(name='Official answer', value=self.view.tossup['answer'], inline=True)
+            e.add_field(name='Answered by', value=interaction.user.mention, inline=True)
             items = self.view.children
             for item in items:
                 if isinstance(item, Button):
@@ -59,8 +59,13 @@ class Answer(Modal, title="Submit Answer"):
         elif answer_check_data['directive'] == 'prompt':
             await interaction.response.send_message("Prompt! Try answering the question again", ephemeral=True)
         else:
-            await interaction.response.send_message(f"Incorrect! You've been locked out from the question. The correct answer was {self.view.tossup['answer']}", ephemeral=True)
+            if interaction.message is None:
+                return
+            e = interaction.message.embeds[0]
             self.view.already_answered.append(interaction.user.id)
+            e.add_field(name="Incorrect answer", value=self.answer.value, inline=False)
+            await interaction.response.edit_message(embed=e)
+            await interaction.followup.send(f"Incorrect! You've been locked out from the question. The correct answer was {self.view.tossup['answer']}", ephemeral=True)
             await db.user.upsert(
                 where={'id': interaction.user.id},
                 data={
