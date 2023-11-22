@@ -7,7 +7,7 @@ from prisma.models import User
 from typing import TYPE_CHECKING, Literal
 if TYPE_CHECKING:
     from .TossupButtons import TossupButtons, SoloTossupButtons
-from discord import Button
+from discord.ui.button import Button
 from common.types import category_field_translations
 
 
