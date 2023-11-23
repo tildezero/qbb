@@ -11,13 +11,17 @@ import asyncio
 
 load_dotenv()
 
-if getenv('TOKEN') is None or getenv('OWNER_ID') is None:
+token = getenv('TOKEN')
+owner_id = getenv('OWNER_ID')
+if token is None or owner_id is None:
     print('please set a TOKEN and OWNER_ID environment variable')
     exit(1)
 
 class QBBBot(Bot):
     def __init__(self) -> None:
-        super().__init__(command_prefix=when_mentioned, intents=Intents.default())
+        i = Intents.default()
+        i.members = True
+        super().__init__(command_prefix=when_mentioned, intents=i)
 
     async def setup_hook(self):
         await self.load_extension('cogs.tossup')
@@ -28,16 +32,15 @@ class QBBBot(Bot):
 
 
 bot = QBBBot()
-bot.qb_categories = Literal['Literature', 'History', 'Science', 'Fine Arts', 'Religion', 'Mythology', 'Philosophy',
-                            'Social Science', 'Current Events', 'Geography', 'Other Academic', 'Trash']
+
 
 
 @bot.command()
 async def sync(ctx: Context):
-    if str(ctx.author.id) == getenv('OWNER_ID'):
+    if str(ctx.author.id) == owner_id:
         await bot.tree.sync()
         await ctx.send('ok')
     else:
         await ctx.send('no')
 
-bot.run(getenv('TOKEN'))
+bot.run(token)

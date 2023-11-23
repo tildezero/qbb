@@ -1,5 +1,5 @@
 from discord.ext.commands import Cog, Bot
-from discord.app_commands import command 
+from discord.app_commands import command, Group
 from discord import Interaction, Embed, Color, User
 from prisma import Prisma
 from common.types import category_field_translations
@@ -11,6 +11,28 @@ class Stats(Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
         super().__init__()
+    
+    leaderboard = Group(name="leaderboard", description="Commands for the leaderboard")
+    
+    @leaderboard.command(name="global", description="Get global leaderboard")
+    async def _global(self, ctx: Interaction, category: str) -> None:
+        db = Prisma()
+        await db.connect()
+        top_10 = await db.user.find_many(
+            take=10,
+            order={
+                'questions_correct': 'desc'
+            }
+        )
+        st = ''
+        for p in top_10:
+            u = self.bot.get_user(p.id)
+            if u is None:
+                u = await self.bot.fetch_user(p.id)
+            st += f'{u.name} - {p.questions_correct} correct ({p.questions_incorrect} incorrect)\n'
+        e = Embed(title=f"Top 10 qbbers globally", description=st)
+        await ctx.response.send_message(embed=e)
+        await db.disconnect()
 
     @command(description="Get your statistics for qbb")
     async def stats(self, ctx: Interaction, user: Optional[User] = None):
